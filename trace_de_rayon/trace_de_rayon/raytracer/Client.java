@@ -26,8 +26,8 @@ public class Client implements ServiceClient{
         //on ajoute l'image à la liste des images
         this.disp.setImage(image, co.getX(), co.getY());
     }
-    public Client() throws RemoteException, ServerNotActiveException, NotBoundException {
-        String ip = "127.0.0.1";
+    public Client(String ip) throws RemoteException, ServerNotActiveException, NotBoundException {
+        //String ip = "127.0.0.1";
 
         Registry registry = LocateRegistry.getRegistry(ip, 1099);
         ServiceCentral serviceCentral = (ServiceCentral) registry.lookup("serviceCentral");

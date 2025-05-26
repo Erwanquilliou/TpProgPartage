@@ -6,7 +6,7 @@ import java.rmi.server.ServerNotActiveException;
 
 public class LancerClient {
     public static void main (String[] args) throws ServerNotActiveException, NotBoundException, RemoteException {
-        Client client = new Client();
+        Client client = new Client(args[0]);
         //normalement c'est tout ici
     }
 }

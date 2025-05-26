@@ -12,7 +12,7 @@ public class LancerServiceEsclave {
         ServiceEsclaveTravailleur serviceEsclave = new ServiceEsclaveTravailleur();
         ServiceEsclave s = (ServiceEsclave) UnicastRemoteObject.exportObject(serviceEsclave, 0);
 
-        String ip = "127.0.0.1";
+        String ip = args[0];
 
         Registry registry = LocateRegistry.getRegistry(ip, 1099);
         ServiceCentral serviceCentral = (ServiceCentral) registry.lookup("serviceCentral");
