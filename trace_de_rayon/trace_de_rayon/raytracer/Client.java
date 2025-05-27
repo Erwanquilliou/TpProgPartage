@@ -65,8 +65,36 @@ public class Client implements ServiceClient{
         for (ServiceEsclave esclave : this.esclaves) {
             ContacteurEsclave ce = new ContacteurEsclave(esclave, coordonnees, scene, this);
             ce.start();
-            //c'est tout ils s'arretent tout seul quand tout fini ou service esclave HS
+            //ils s'arretent tout seul quand tout fini ou service esclave HS
         }
+
+        //on doit aussi gérer les nouveaux arrivant
+        //on redemande à chaque fois la liste des esclaves au service central
+        //et si y'a des nouveaux esclaves, on les ajoute à la liste des esclaves
+        new Thread(() -> {
+            while (true) {
+                try {
+                    Thread.sleep(5000); //toutes les 5 secondes
+                    Registry newRegistry = LocateRegistry.getRegistry(ip, 1099);
+                    ServiceCentral newServiceCentral = (ServiceCentral) newRegistry.lookup("serviceCentral");
+                    List<ServiceEsclave> newEsclaves = newServiceCentral.getEsclave();
+
+                    synchronized (this.esclaves) {
+                        for (ServiceEsclave esclave : newEsclaves) {
+                            if (!this.esclaves.contains(esclave)) {
+                                System.out.println("Nouveau esclave détecté : " + esclave);
+                                this.esclaves.add(esclave);
+                                ContacteurEsclave ce = new ContacteurEsclave(esclave, coordonnees, scene, this);
+                                //on le démarre si c'est un nouvel esclave
+                                ce.start();
+                            }
+                        }
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
 
         //on display notre image et on va recevoir les images au fur et à mesure, normalement
     }
